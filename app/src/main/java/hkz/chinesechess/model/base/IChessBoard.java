@@ -1,8 +1,11 @@
-package hkz.chinesechess.model;
+package hkz.chinesechess.model.base;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import java.util.List;
+
+import hkz.chinesechess.model.base.IChess;
 
 /**
  * Created by wind on 2016/1/14.
@@ -22,7 +25,7 @@ public interface IChessBoard {
 
     List<IChess> getChessByType(int type);
 
-    Point getSize();
+    Rect getSize();
 
     void addChess(IChess chess);
 

@@ -1,4 +1,4 @@
-package hkz.chinesechess.model;
+package hkz.chinesechess.model.base;
 
 import android.graphics.Point;
 
@@ -28,3 +28,5 @@ public interface IChess {
     void stopTrack(OnChessMoveListener listener);
 
 }
+
+

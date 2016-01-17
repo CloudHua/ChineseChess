@@ -1,4 +1,4 @@
-package hkz.chinesechess.model;
+package hkz.chinesechess.model.base;
 
 import android.graphics.Point;
 
