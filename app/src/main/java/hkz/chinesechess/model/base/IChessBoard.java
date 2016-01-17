@@ -30,6 +30,7 @@ public interface IChessBoard {
     void addChess(IChess chess);
 
     void removeChess(IChess chess);
+    void moveChess(IChess chess, Point from, Point to);
 
     boolean isChessHere(Point point);
 

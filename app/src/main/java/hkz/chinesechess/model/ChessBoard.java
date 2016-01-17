@@ -3,6 +3,7 @@ package hkz.chinesechess.model;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import hkz.chinesechess.model.base.IChess;
@@ -15,34 +16,26 @@ import hkz.chinesechess.model.base.IPlayer;
 public class ChessBoard implements IChessBoard{
     //IChess chess;
     Rect size;
-    List<IChess> iChessesRed;
-    List<IChess> iChessesBlack;
-    List<IChess> iChesses;
+    List<IChess> iChesses=new LinkedList<IChess>();
+    ChessBoardListener chessBoardListener;
 
-
-    public ChessBoard(Rect size,List<IChess> iChessesRed,List<IChess> iChessesBlack){
+    public ChessBoard(Rect size,List<IChess> iChesses){
                this.size=size;
-               this.iChessesRed=iChessesRed;
-               this.iChessesBlack=iChessesBlack;
-        for (int i=0;i<iChessesRed.size();i++) {
-            iChesses.add(i,iChessesRed.get(i));
-        }
-        for (int j=0;j<iChessesBlack.size();j++){
-            iChesses.add(iChessesRed.size()+j,iChessesBlack.get(j));
-        }
     }
     @Override
     public List<IChess> getAllChess() {
-
         return iChesses;
     }
 
     @Override
     public List<IChess> getChessByType(int type) {
-        if(type==0){
-        return iChessesRed;
-        }else
-            return iChessesBlack;
+        List iChessesTemp=new LinkedList();
+        for(int i=0;i<iChesses.size();i++){
+            if (iChesses.get(i).getType()==type){
+                iChessesTemp.add(iChesses.get(i));
+            }
+        }
+        return iChessesTemp;
     }
 
     @Override
@@ -52,13 +45,28 @@ public class ChessBoard implements IChessBoard{
 
     @Override
     public void addChess(IChess chess) {
-            iChesses.add(chess);
+        iChesses.add(chess);
+        if(chessBoardListener!=null){
+            chessBoardListener.onChessAdded(chess);
+        }
     }
 
     @Override
     public void removeChess(IChess chess) {
         iChesses.remove(chess);
+        if(chessBoardListener!=null){
+            chessBoardListener.onChessRemoved(chess);
+        }
     }
+
+    @Override
+    public void moveChess(IChess chess, Point from, Point to) {
+        chess.moveTo(to);
+        if(chessBoardListener!=null){
+            chessBoardListener.onChessMoved(chess,from,to);
+        }
+    }
+
 
     @Override
     public boolean isChessHere(Point point) {
@@ -82,11 +90,14 @@ public class ChessBoard implements IChessBoard{
 
     @Override
     public void listenChessBoard(ChessBoardListener listener) {
+             chessBoardListener=listener;
 
     }
 
     @Override
     public void unListenChessBoard(ChessBoardListener listener) {
-
+            if(chessBoardListener==listener) {
+                chessBoardListener = null;
+            }
     }
 }
