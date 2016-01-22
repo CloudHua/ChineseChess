@@ -15,6 +15,8 @@ public interface IChessBoardView {
         boolean canDragChess(IChess chess, View chessView);
 
         boolean canDropChess(IChess chess, View chessView, Point point);
+
+        void onChessMoved(IChess chess, Point from, Point to);
     }
 
     void addChess(IChess chess);
