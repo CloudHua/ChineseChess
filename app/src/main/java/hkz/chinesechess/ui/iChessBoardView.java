@@ -10,7 +10,7 @@ import hkz.chinesechess.model.base.IChess;
  */
 public interface IChessBoardView {
 
-    public interface ChessBoardViewCallback {
+    interface Callback {
 
         boolean canDragChess(IChess chess, View chessView);
 

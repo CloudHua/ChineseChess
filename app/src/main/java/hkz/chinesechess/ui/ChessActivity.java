@@ -4,7 +4,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,8 +36,7 @@ public class ChessActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        int width = (int) (getResources().getDisplayMetrics().widthPixels
-                - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics()));
+        int width = getResources().getDisplayMetrics().widthPixels;
         int height = width / 9 * 10;
         mChessBoardView = new ChessBoardView(this, mChessBoardViewCallback);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
@@ -50,7 +49,7 @@ public class ChessActivity extends AppCompatActivity {
         container.addView(mChessBoardView);
     }
 
-    private IChessBoardView.ChessBoardViewCallback mChessBoardViewCallback = new IChessBoardView.ChessBoardViewCallback() {
+    private IChessBoardView.Callback mChessBoardViewCallback = new IChessBoardView.Callback() {
         @Override
         public boolean canDragChess(IChess chess, View chessView) {
             return true;
@@ -63,7 +62,7 @@ public class ChessActivity extends AppCompatActivity {
 
         @Override
         public void onChessMoved(IChess chess, Point from, Point to) {
-
+            Log.i("Chess", "onChessMoved from " + from + " to " + to);
         }
     };
 }
