@@ -20,7 +20,8 @@ public class ChessBoard implements IChessBoard{
     ChessBoardListener chessBoardListener;
 
     public ChessBoard(Rect size,List<IChess> iChesses){
-               this.size=size;
+
+        this.size=size;
     }
     @Override
     public List<IChess> getAllChess() {
@@ -40,6 +41,7 @@ public class ChessBoard implements IChessBoard{
 
     @Override
     public Rect getSize() {
+
         return size;
     }
 
