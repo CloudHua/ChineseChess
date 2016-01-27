@@ -9,8 +9,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import hkz.chinesechess.R;
 import hkz.chinesechess.model.Controller;
 import hkz.chinesechess.model.Player;
@@ -19,7 +17,6 @@ import hkz.chinesechess.model.base.IChessBoard;
 import hkz.chinesechess.model.base.IController;
 import hkz.chinesechess.model.base.IPlayer;
 import hkz.chinesechess.model.base.TYPE;
-import hkz.chinesechess.model.chess.BaseChess;
 import hkz.chinesechess.ui.widget.ChessBoardView;
 
 /**
@@ -27,7 +24,6 @@ import hkz.chinesechess.ui.widget.ChessBoardView;
  */
 public class ChessActivity extends AppCompatActivity {
 
-    @Bind(R.id.container)
     FrameLayout container;
     IController iController;
     ChessBoardView mChessBoardView;
@@ -36,7 +32,7 @@ public class ChessActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chess);
-        ButterKnife.bind(this);
+        container = (FrameLayout) findViewById(R.id.container);
         iController=new Controller();
         iController.registerControllerListener(listener);
         iController.registerTurnListener(turnListener);

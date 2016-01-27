@@ -1,8 +1,5 @@
 package hkz.chinesechess.ui.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.PointFEvaluator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -39,6 +36,7 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
     private final int height = 9;
 
     private final int piece;
+    private final int padding;
 
     private ViewDragHelper mViewDragHelper;
 
@@ -49,24 +47,22 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
         mCallback = callback;
         mViewDragHelper = ViewDragHelper.create(this, 1f, new DragCallback());
         piece = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
-        setPadding(piece, piece, piece, piece);
-        setClipChildren(false);
-        setClipToPadding(false);
+        padding = piece;
     }
 
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
         super.setLayoutParams(params);
-        mWidth = params.width - getPaddingLeft() - getPaddingRight();
-        mHeight = params.height - getPaddingTop() - getPaddingBottom();
+        mWidth = params.width - padding * 2;
+        mHeight = params.height - padding * 2;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        mWidth = width - getPaddingLeft() - getPaddingRight();
-        mHeight = height - getPaddingTop() - getPaddingBottom();
+        mWidth = width - padding * 2;
+        mHeight = height - padding * 2;
         measureChildren(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(width, height);
     }
@@ -109,10 +105,10 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(2);
         for (int i = 0; i <= width; i++) {
-            canvas.drawLine(i * mWidth / width + getPaddingLeft(), getPaddingTop(), i * mWidth / width + getPaddingLeft(), mHeight + getPaddingTop(), paint);
+            canvas.drawLine(i * mWidth / width + padding, padding, i * mWidth / width + padding, mHeight + padding, paint);
         }
         for (int i = 0; i <= height; i++) {
-            canvas.drawLine(getPaddingLeft(), i * mHeight / height + getPaddingTop(), mWidth + getPaddingLeft(), i * mHeight / height + getPaddingTop(), paint);
+            canvas.drawLine(padding, i * mHeight / height + padding, mWidth + padding, i * mHeight / height + padding, paint);
         }
         super.dispatchDraw(canvas);
     }
@@ -132,7 +128,7 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
 
     @Override
     public void moveChess(IChess chess, Point from, Point to) {
-        moveChess(chess, from, to, true);
+        moveChess(chess, from, to, false);
     }
 
     private void moveChess(IChess chess, Point from, Point to, boolean callCallback) {
@@ -170,13 +166,13 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
         Point out = new Point();
         out.x = point.x * (mWidth / width);
         out.y = point.y * (mHeight / height);
-        out.offset(-piece / 2 + getPaddingLeft(), -piece / 2 + getPaddingTop());
+        out.offset(-piece / 2 + padding, -piece / 2 + padding);
         return out;
     }
 
     @Override
     public Point toChessPoint(Point point) {
-        point.offset(piece / 2 - getPaddingLeft(), piece / 2 - getPaddingTop());
+        point.offset(piece / 2 - padding, piece / 2 - padding);
         int x = Math.round((float) point.x / (mWidth / width));
         int y = Math.round((float) point.y / (mHeight / height));
         x = Math.min(Math.max(x, 0), width);
@@ -233,7 +229,7 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
             IChess chess = getChessFromView(releasedChild);
             Point chessPoint = toChessPoint(new Point(releasedChild.getLeft(), releasedChild.getTop()));
             if (mCallback.canDropChess(chess, releasedChild, chessPoint)) {
-                moveChess(chess, chess.getPoint(), chessPoint);
+                moveChess(chess, chess.getPoint(), chessPoint, true);
             } else {
                 moveChess(chess, chessPoint, chess.getPoint(), false);
             }
