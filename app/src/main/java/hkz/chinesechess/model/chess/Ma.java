@@ -16,7 +16,7 @@ public class Ma extends BaseChess {
 
     @Override
     public boolean canReach(Point point) {
-        Point TempPoint=chessPoint;
+        Point TempPoint=new Point(chessPoint);
         if(!chessBoard.getSize().contains(point.x, point.y) || point.equals(chessPoint)) {
             return false;
         }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import hkz.chinesechess.model.base.IChess;
+import hkz.chinesechess.model.util.ChessUtil;
 import hkz.chinesechess.ui.IChessBoardView;
 
 /**
@@ -201,23 +202,21 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
         GradientDrawable drawable = new GradientDrawable();
         drawable.setCornerRadius(80);
         drawable.setSize(160, 160);
-        drawable.setStroke(2, Color.RED);
+        drawable.setStroke(2, ChessUtil.getChessColor(chess));
         chessView.setBackgroundDrawable(drawable);
-        chessView.setText("兵");
+        chessView.setText(ChessUtil.getChessName(chess));
         chessView.setGravity(Gravity.CENTER);
-        chessView.setTextColor(Color.RED);
+        chessView.setTextColor(ChessUtil.getChessColor(chess));
         chessView.setTag(chess);
         return chessView;
     }
 
     private class DragCallback extends ViewDragHelper.Callback {
 
-        @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return mChesses.containsValue(child) && mCallback.canDragChess(getChessFromView(child), child);
         }
 
-        @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             LayoutParams params = (LayoutParams) changedView.getLayoutParams();
             params.x = left;
@@ -225,12 +224,10 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
             changedView.setLayoutParams(params);
         }
 
-        @Override
         public void onViewCaptured(View capturedChild, int activePointerId) {
             capturedChild.animate().scaleX(1.1f).scaleY(1.1f).start();
         }
 
-        @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             releasedChild.animate().scaleX(1).scaleY(1).start();
             IChess chess = getChessFromView(releasedChild);
@@ -242,7 +239,6 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
             }
         }
 
-        @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             final int bottomBound = getHeight() - child.getHeight();
             final int newTop = Math.min(Math.max(top, 0), bottomBound);
@@ -256,12 +252,10 @@ public class ChessBoardView extends ViewGroup implements IChessBoardView {
             return newLeft;
         }
 
-        @Override
         public int getViewHorizontalDragRange(View child) {
             return getWidth() - child.getWidth();
         }
 
-        @Override
         public int getViewVerticalDragRange(View child) {
             return getHeight() - child.getHeight();
         }

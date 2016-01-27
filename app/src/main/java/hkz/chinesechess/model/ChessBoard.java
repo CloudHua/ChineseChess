@@ -19,9 +19,8 @@ public class ChessBoard implements IChessBoard{
     List<IChess> iChesses=new LinkedList<IChess>();
     ChessBoardListener chessBoardListener;
 
-    public ChessBoard(Rect size,List<IChess> iChesses){
-
-        this.size=size;
+    public ChessBoard(){
+        this.size=new Rect(0,0,9,10);
     }
     @Override
     public List<IChess> getAllChess() {

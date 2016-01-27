@@ -12,7 +12,12 @@ import android.widget.FrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import hkz.chinesechess.R;
+import hkz.chinesechess.model.Controller;
+import hkz.chinesechess.model.Player;
 import hkz.chinesechess.model.base.IChess;
+import hkz.chinesechess.model.base.IChessBoard;
+import hkz.chinesechess.model.base.IController;
+import hkz.chinesechess.model.base.IPlayer;
 import hkz.chinesechess.model.base.TYPE;
 import hkz.chinesechess.model.chess.BaseChess;
 import hkz.chinesechess.ui.widget.ChessBoardView;
@@ -24,7 +29,7 @@ public class ChessActivity extends AppCompatActivity {
 
     @Bind(R.id.container)
     FrameLayout container;
-
+    IController iController;
     ChessBoardView mChessBoardView;
 
     @Override
@@ -32,7 +37,12 @@ public class ChessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chess);
         ButterKnife.bind(this);
+        iController=new Controller();
+        iController.registerControllerListener(listener);
+        iController.registerTurnListener(turnListener);
         initView();
+        iController.init(new Player(TYPE.BLACK),new Player(TYPE.RED));
+        iController.start();
     }
 
     private void initView() {
@@ -42,27 +52,71 @@ public class ChessActivity extends AppCompatActivity {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
         params.gravity = Gravity.CENTER;
         mChessBoardView.setLayoutParams(params);
-        mChessBoardView.addChess(new BaseChess(TYPE.BLACK, new Point(5, 4), null));
-        mChessBoardView.addChess(new BaseChess(TYPE.BLACK, new Point(4, 4), null));
-        mChessBoardView.addChess(new BaseChess(TYPE.BLACK, new Point(4, 5), null));
 
         container.addView(mChessBoardView);
     }
+    private IController.TurnListener turnListener=new IController.TurnListener() {
+        @Override
+        public void onTurn(IPlayer player) {
 
+        }
+    };
+    private IController.ControllerListener listener=new IController.ControllerListener() {
+        @Override
+        public void onInit(IChessBoard chessBoard) {
+           chessBoard.listenChessBoard(new IChessBoard.ChessBoardListener() {
+               @Override
+               public void onChessAdded(IChess chess) {
+                   mChessBoardView.addChess(chess);
+               }
+
+               @Override
+               public void onChessRemoved(IChess chess) {
+                  mChessBoardView.removeChess(chess);
+               }
+
+               @Override
+               public void onChessMoved(IChess chess, Point from, Point to) {
+                  mChessBoardView.moveChess(chess, from, to);
+               }
+           });
+        }
+
+        @Override
+        public void onStart(IChessBoard chessBoard) {
+
+        }
+
+        @Override
+        public void onPause(IChessBoard chessBoard) {
+
+        }
+
+        @Override
+        public void onResume(IChessBoard chessBoard) {
+
+        }
+
+        @Override
+        public void onStop(IChessBoard chessBoard) {
+
+        }
+    };
     private IChessBoardView.Callback mChessBoardViewCallback = new IChessBoardView.Callback() {
         @Override
         public boolean canDragChess(IChess chess, View chessView) {
-            return true;
+            return iController.getState()==Controller.ON&&chess.getType()==iController.getTurnedPlayer().getType();
         }
 
         @Override
         public boolean canDropChess(IChess chess, View chessView, Point point) {
-            return true;
+            return chess.canReach(point);
         }
 
         @Override
         public void onChessMoved(IChess chess, Point from, Point to) {
             Log.i("Chess", "onChessMoved from " + from + " to " + to);
+            iController.commitMovement(iController.getTurnedPlayer(),chess,from,to);
         }
     };
 }

@@ -16,7 +16,7 @@ public class Xiang extends BaseChess {
 
     @Override
     public boolean canReach(Point point) {
-        Point TempPoint1=chessPoint,TempPoint2=chessPoint;
+        Point TempPoint1=new Point(chessPoint),TempPoint2=new Point(chessPoint);
         if(!chessBoard.getSize().contains(point.x, point.y) || point.equals(chessPoint)) {
             return false;
         }
